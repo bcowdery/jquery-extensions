@@ -36,15 +36,32 @@ def compile(path, source, destination = source)
   secretary.concatenation.save_to(File.join(PROJECT_DIST_DIR, destination))
 end
 
-namespace :prototype do
-  Dir.chdir('prototype') do    
-    load 'Rakefile'
-  end
-end
-
 desc "Builds the distribution"
-task :dist => [:require_prototype, 'prototype:dist'] do 
-  compile("src", "extensions.js")
+task :dist => ['dist:extensions']
+
+namespace :dist do   
+  task :extensions do 
+    compile("src", "extensions.js")
+  end
+  
+  task :prototype => [:require] do
+    namespace :prototype do
+      Dir.chdir('prototype') do    
+        load 'Rakefile'
+      end
+    end
+    
+    Rake::Task['prototype:dist'].invoke
+  end
+  
+  task :require do
+    prototype_src = 'prototype'
+    unless File.exists?(prototype_src)
+       puts "\nYou'll need the Prototype source to build and run tests\n\n"
+       puts "  $ git clone git://github.com/sstephenson/prototype.git prototype"
+       puts "\nand you should be good to go.\n\n"
+   end
+  end
 end
 
 Rake::PackageTask.new('extensions', PROJECT_VERSION) do |package|
@@ -64,9 +81,10 @@ task :clean_package_source do
   rm_rf File.join(PROJECT_PKG_DIR, "extensions-#{PROJECT_VERSION}")
 end
 
+desc "Runs all tests and collects the results"
 task :test => ['test:build', 'test:run']
+
 namespace :test do
-  desc 'Runs all the JavaScript unit tests and collects the results'
   task :run => [:require] do
     testcases        = ENV['TESTCASES']
     browsers_to_test = ENV['BROWSERS'] && ENV['BROWSERS'].split(',')
@@ -145,13 +163,4 @@ namespace :caja do
     end
     require lib
   end
-end
-
-task :require_prototype do
-  prototype_src = 'prototype'
-  unless File.exists?(prototype_src)
-     puts "\nYou'll need the Prototype source to build and run tests\n\n"
-     puts "  $ git clone git://github.com/sstephenson/prototype.git prototype"
-     puts "\nand you should be good to go.\n\n"
- end
 end
