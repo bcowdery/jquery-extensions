@@ -4,10 +4,6 @@ Object.extend(String.prototype, {
 	 * @param {String} value
 	 */
   	equalsIgnoreCase: function(value) {
-  		if (value != null) {
-			return this.toLowerCase() == value.toLowerCase() ? true : false;
-		} else {
-			return false;
-		}
+  		return (value != null ? this.toLowerCase() == value.toLowerCase() : false);
   	}
 });
