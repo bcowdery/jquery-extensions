@@ -15,7 +15,21 @@ Object.extend(Array.prototype, {
 		}
 		this[index] = value;
 		return this;
-	}
+	},
+	
+	/**
+	 * Splits an array into two separate instances at the given index, operationaly 
+	 * similar to Array::slice, only preceeding array elements are not discarded. This
+	 * function does not alter the original array. 
+	 * 
+	 * var ary = [1, 2, 3, 4];
+	 * ary.split(2); -> [[1, 2], [3, 4]]
+	 * 
+	 * @param {Object} index (inclusive)
+	 */
+	split: function(index) {
+		return [this.slice(0, index), this.slice(index, this.size())];
+	},
 });
 
 

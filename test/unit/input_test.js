@@ -1,16 +1,14 @@
-	  
+var empty;
+		  
 new Test.Unit.Runner({
 	setup: function() {
-	  var select = document.createElement('select');
-	  select.id = "empty";
+	  	empty = document.createElement('select');
 	},
 	teardown: function() {
 		empty.clear();	
 	},
 
   	testSelectAdd: function() {
-		var empty = $('empty');
-		
 		var one = new Option(1, "test 1");
 		empty.add(one, null);
 		this.assertEqual(one, empty.options[0]);
@@ -24,9 +22,7 @@ new Test.Unit.Runner({
 		this.assertEqual(three, empty.options[2]);			
 	},
 	
-	testSelectAddIE: function() {
-		var empty = $('empty');
-				
+	testSelectAddIE: function() {			
 		if (Prototype.Browser.IE) {				
 			var one = new Option(1, "test 1");
 			empty.add(one);
@@ -35,8 +31,6 @@ new Test.Unit.Runner({
 	},
 	
 	testClear: function() {
-		var empty = $('empty');
-				
 		var option = new Option("test", "test");
 		empty.add(option, null);
 		empty.add(option, null);			
