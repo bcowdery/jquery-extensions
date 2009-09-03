@@ -48,6 +48,11 @@ new Test.Unit.Runner({
 		this.assertEqual("#007fff", rgb.hex());
 	},
 	
+	testRGBString: function() {
+		var rgb = new RGB(0, 127, 255);
+		this.assertEqual("rgb(0, 127, 255", rgb.string());
+	},
+	
 	testMix: function() {
 		var red = new RGB(255, 0, 0);
 		var blue = new RGB(0, 0, 255);

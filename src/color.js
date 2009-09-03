@@ -28,7 +28,7 @@ var RGB = Class.create({
 	 */
 	string: function() {
 		var ary = this.integer();		
-		return new Template("rgb(#{r}, #{g}, #{b})").evaluate({r: ary[0], g: ary[1], b: ary[0]});	
+		return new Template("rgb(#{r}, #{g}, #{b})").evaluate({r: ary[0], g: ary[1], b: ary[2]});	
 	},
 	
 	/**
