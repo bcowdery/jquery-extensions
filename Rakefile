@@ -71,9 +71,10 @@ Rake::PackageTask.new('extensions', PROJECT_VERSION) do |package|
     '[A-Z]*',
     'prototype/dist/prototype.js',
     'dist/extensions.js',
-    'lib/**',
-    'src/**',
-    'test/**'
+    'src/*',
+    'test/unit/*.js',
+    'test/unit/fixtures/*',
+    'test/unit/templates/*'
   )
 end
 
