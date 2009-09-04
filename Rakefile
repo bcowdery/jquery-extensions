@@ -1,6 +1,7 @@
 require 'rake'
 require 'rake/packagetask'
 
+require 'rubygems'
 require 'yaml'
 
 PROJECT_ROOT          = File.expand_path(File.dirname(__FILE__))
@@ -10,11 +11,22 @@ PROJECT_PKG_DIR       = File.join(PROJECT_ROOT, 'pkg')
 PROJECT_TEST_DIR      = File.join(PROJECT_ROOT, 'test')
 PROJECT_TEST_UNIT_DIR = File.join(PROJECT_TEST_DIR, 'unit')
 PROJECT_TMP_DIR       = File.join(PROJECT_TEST_UNIT_DIR, 'tmp')
+PROJECT_NAME     = YAML.load(IO.read(File.join(PROJECT_SRC_DIR, 'constants.yml')))['PROJECT_NAME']
 PROJECT_VERSION  = YAML.load(IO.read(File.join(PROJECT_SRC_DIR, 'constants.yml')))['PROJECT_VERSION']
 
-$:.unshift File.join('prototype', 'vendor', 'sprockets', 'lib')
+task :default => [:dist, 'package:clean_source']
 
-task :default => [:dist, :package, :clean_package_source]
+desc "Builds and packages the distribution"
+task :dist => [:build, :compress, :package]
+
+desc "Remove all generated build files and package products"
+task :clean => ['build:clean', 'package:clean']
+
+
+# Build/Compile tasks
+# ---------------------
+
+$:.unshift File.join('prototype', 'vendor', 'sprockets', 'lib')
 
 def compile(path, source, destination = source)
   begin
@@ -37,12 +49,16 @@ def compile(path, source, destination = source)
 end
 
 desc "Builds the distribution"
-task :dist => ['dist:extensions']
+task :build => ['build:javascript']
 
-namespace :dist do   
-  task :extensions do 
-    compile("src", "extensions.js")
+namespace :build do   
+  task :javascript => [:clean, :prototype] do 
+    compile("src", "#{PROJECT_NAME}.js")
   end
+  
+  task :clean do 
+    rm_rf Dir.glob(File.join(PROJECT_DIST_DIR, "*"))   
+  end  
   
   task :prototype => [:require] do
     namespace :prototype do
@@ -64,25 +80,65 @@ namespace :dist do
   end
 end
 
-Rake::PackageTask.new('extensions', PROJECT_VERSION) do |package|
+
+# Compression tasks
+# ---------------------
+
+desc "Generates a compressed distribution"
+task :compress => ['compress:javascript']
+
+namespace :compress do 
+  task :javascript => [:require] do
+    code = File.read(File.join(PROJECT_DIST_DIR, "#{PROJECT_NAME}.js"))
+    compressed = Packr.pack(code, :shrink_vars => true);
+    File.open(File.join(PROJECT_DIST_DIR, "#{PROJECT_NAME}.min.js"), 'wb') { |f| f.write(compressed) }
+  end
+  
+  task :require do    
+    matches = Gem.source_index.find_name("packr", ">=3.1")
+    if matches.empty?
+      puts "\nYou'll need PackR 3.1+ to generate a compressed library. Just run:\n\n"
+      puts "  $ gem install packr"
+      puts "\nand you should be all set.\n\n"      
+    end
+    require matches.first().name 
+  end
+end
+
+
+# Packaging tasks
+# ---------------------
+
+Rake::PackageTask.new("#{PROJECT_NAME}", PROJECT_VERSION) do |package|
   package.need_tar_gz = true
   package.package_dir = PROJECT_PKG_DIR
   package.package_files.include(
-    '[A-Z]*',
-    'prototype/dist/prototype.js',
-    'dist/extensions.js',
-    'src/*',
-    'test/unit/*.js',
-    'test/unit/fixtures/*',
-    'test/unit/templates/*'
+    "[A-Z]*",
+    "prototype/dist/prototype.js",
+    "dist/#{PROJECT_NAME}.js",
+    "dist/#{PROJECT_NAME}.min.js",
+    "src/*",
+    "test/unit/*.js",
+    "test/unit/fixtures/*",
+    "test/unit/templates/*"
   )
 end
 
-task :clean_package_source do
-  rm_rf File.join(PROJECT_PKG_DIR, "extensions-#{PROJECT_VERSION}")
+namespace :package do
+  task :clean_source do
+    rm_rf File.join(PROJECT_PKG_DIR, "#{PROJECT_NAME}-#{PROJECT_VERSION}")
+  end
+  
+  task :clean do
+    rm_rf Dir.glob(File.join(PROJECT_PKG_DIR, "*"))
+  end
 end
 
-desc "Runs all tests and collects the results"
+
+# Testing tasks
+# ---------------------
+
+desc "Runs all the JavaScript unit tests and collects the results"
 task :test => ['test:build', 'test:run']
 
 namespace :test do

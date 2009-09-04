@@ -50,7 +50,7 @@ new Test.Unit.Runner({
 	
 	testRGBString: function() {
 		var rgb = new RGB(0, 127, 255);
-		this.assertEqual("rgb(0, 127, 255", rgb.string());
+		this.assertEqual("rgb(0, 127, 255)", rgb.string());
 	},
 	
 	testMix: function() {
