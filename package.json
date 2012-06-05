@@ -1,0 +1,25 @@
+{
+	"name": "jquery-extensions",
+	"title": "jQuery Extensions",
+	"description": "Object-oriented extensions, syntax sugar and helpful functions for the jQuery Javascript library",
+	"version": "0.0-SNAPSHOT",
+	"homepage": "http://github.com/bcowdery/jquery-extensions",
+	"author": {
+		"name": "Brian Cowdery"
+	},
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "http://github.com/bcowdery/jquery-extensions/blob/MIT-LICENSE.txt"
+		}
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bcowdery/jquery-extensions.git"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"grunt-compare-size": ">=0.1.0",
+		"grunt": ">=0.3.9"		
+	}	
+}
