@@ -3,6 +3,8 @@
 /*global notDeepEqual:false, strictEqual:false, notStrictEqual:false, raises:false*/
 (function($) {
 
+    module("Method overloading");
+
 	test('test method overloading', function() {
 		jQuery.Class.overload(Object, { 
 			someMethod: [

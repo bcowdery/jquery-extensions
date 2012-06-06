@@ -3,6 +3,8 @@
 /*global notDeepEqual:false, strictEqual:false, notStrictEqual:false, raises:false*/
 (function($) {
 
+    module("Array functions");
+
     test('insert into array', function() {
         // index within array
         deepEqual(

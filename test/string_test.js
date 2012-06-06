@@ -4,6 +4,8 @@
 
 (function($) {
 
+    module("String functions");
+
 	test("equals ignore case", function() {
 		equal(true, "String".equalsIgnoreCase("string"), "strings equalsregardless of case");		
         equal(false, "String".equalsIgnoreCase("not string"), "different character strings are not equal");

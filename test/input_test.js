@@ -21,15 +21,15 @@
     test("add element", function() {
         var one = new Option(1, "test 1");
         empty.add(one, null);
-        equal(one, empty.options[0], "added option 1");
+        equal(one, empty.options[0], "expected option 1 appended to the list");
         
         var two = new Option(2, "test 2");
         empty.add(two, one);
-        equal(two, empty.options[0], "added option 2");
+        equal(two, empty.options[0], "expected option 2 appended to the list");
         
         var three = new Option(3, "test 3");
         empty.add(three, null);
-        equal(three, empty.options[2], "added option 3");            
+        equal(three, empty.options[2], "expected option 3 appended to the list");            
     });
     
     test("add element in IE", function() {            
@@ -48,7 +48,7 @@
         empty.add(option, null);            
         empty.clear();            
         
-        equal(0, empty.options.length, "all options cleared");        
+        equal(0, empty.options.length, "expected empty option list");        
     });
 
 } (jQuery));

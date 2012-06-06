@@ -25,14 +25,14 @@
     test("RGB values", function() {
         var rgb = new RGB(0, 127, 255);        
 
-        equal(0.0, rgb.r);                        // 0%
-        ok(roughlyEquals(0.498, rgb.g));  // 49%  - integer precision loss
-        equal(1.0, rgb.b);                        // 100%
+        equal(0.0, rgb.r);          // 0%        
+        ok(/0\.498/.test(rgb.g)); // 49% - integer precision loss                
+        equal(1.0, rgb.b);          // 100%
     });
     
     test("RGB stringify", function() {
         var rgb = new RGB(0, 127, 255);
-        equal("rgb(0, 127, 255)", rgb.string());
+        equal("rgb(0, 127, 255)", rgb.string(), "expected rgb color code as a string");
     });    
     
     
@@ -41,27 +41,29 @@
     test("RGB from 3-digit hex", function() {
         var rgb = new RGB("#08f");
 
-        equal(0.0, rgb.r);                     // 0%
-        ok(roughlyEquals(0.5, rgb.g));  // 53%  - single digit hex precision loss
-        equal(1.0, rgb.b);                    // 100%
+        equal("#0088ff", rgb.hex(), "expected 3-digit hex value to be parsed correctly");
+        
+        equal(0.0, rgb.r);          // 0%        
+        ok(/0\.533/.test(rgb.g)); // 53% - integer precision loss                
+        equal(1.0, rgb.b);          // 100%        
     });
         
     test("RGB from 6-digit hex", function() {
         var rgb = new RGB("#007fff");
 
-        equal(0.0, rgb.r);                        // 0%
-        ok(roughlyEquals(0.498, rgb.g));  // 49%  - integer precision loss
-        equal(1.0, rgb.b);                        // 100%           
+        equal(0.0, rgb.r);          // 0%        
+        ok(/0\.498/.test(rgb.g)); // 49% - integer precision loss                
+        equal(1.0, rgb.b);          // 100%                
     });
     
     test("RGB from unidentified hex", function() {
         var rgb = new RGB("007fff");        
-        equal("#007fff", rgb.hex());
+        equal("#007fff", rgb.hex(), "expected unidentified hex value to be parsed correctly");
     });
 
     test("RGB to hex", function() {
         var rgb = new RGB(0, 127, 255);        
-        equal("#007fff", rgb.hex());
+        equal("#007fff", rgb.hex(), "expected integer RGB values to be converted to hex");
     });
     
     
@@ -71,22 +73,22 @@
         var red = new RGB(255, 0, 0);
         var blue = new RGB(0, 0, 255);
         
-        equal("#800080", red.mix(blue, 0.5).hex());    
-        equal("#800080", blue.mix(red, 0.5).hex());            
+        equal("#800080", red.mix(blue, 0.5).hex(), "expected red mixed with 50% blue");    
+        equal("#800080", blue.mix(red, 0.5).hex(), "expected blue mixed with 50% red");            
     });
     
     test("Darken by pecentage", function() {
         var red = new RGB(255, 0, 0);
-        equal("#800000", red.darken(50).hex());            
-        equal("#330000", red.darken(80).hex());
-        equal("#000000", red.darken(100).hex());
+        equal("#800000", red.darken(50).hex(), "expected red darkened by 50%");            
+        equal("#330000", red.darken(80).hex(), "expected red darkened by 80%");
+        equal("#000000", red.darken(100).hex(), "expected red darkened by 100% to be black");
     });
     
     test("Lighten by percentage", function() {
         var red = new RGB(255, 0, 0);
-        equal("#ff8080", red.lighten(50).hex());            
-        equal("#ffcccc", red.lighten(80).hex());
-        equal("#ffffff", red.lighten(100).hex());        
+        equal("#ff8080", red.lighten(50).hex(), "expected red lightened by 50%");            
+        equal("#ffcccc", red.lighten(80).hex(), "expected red lightened by 80%");            
+        equal("#ffffff", red.lighten(100).hex(), "expected red lightened by 100% to be white");
     });
     
     test("Calculate colors between", function() {
