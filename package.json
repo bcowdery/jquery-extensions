@@ -5,19 +5,26 @@
 	"version": "0.0-SNAPSHOT",
 	"homepage": "http://github.com/bcowdery/jquery-extensions",
 	"author": {
-		"name": "Brian Cowdery"
-	},
-	"licenses": [
-		{
-			"type": "MIT",
-			"url": "http://github.com/bcowdery/jquery-extensions/blob/MIT-LICENSE.txt"
-		}
-	],
+		"name": "Brian Cowdery",
+		"email": "bcowdery@pointyspoon.com"
+	},	
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/bcowdery/jquery-extensions.git"
 	},
-	"dependencies": {},
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "https://github.com/bcowdery/jquery-extensions/blob/master/LICENSE-MIT.txt"
+		},
+		{
+			"type": "GPL",
+			"url": "https://github.com/bcowdery/jquery-extensions/blob/master/LICENSE-GPL"
+		}
+	],	
+	"dependencies": {
+		"jquery": "~1.7"
+	},
 	"devDependencies": {
 		"grunt-compare-size": ">=0.1.0",
 		"grunt": ">=0.3.9"		

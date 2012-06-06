@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+                    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>jQuery Extensions Test Suite</title>
+
+	<!-- local jQuery, removing access to $ (use jQuery, not $). -->
+	<script src="../libs/jquery/jquery.js"></script>
+	<script>jQuery.noConflict()</script>
+	<!-- local QUnit (grunt requires v1.0.0 or newer). -->
+	<link rel="stylesheet" href="../libs/qunit/qunit.css" media="screen">
+	<script src="../libs/qunit/qunit.js"></script>
+
+	<!-- local dependencies and tests. -->
+	<script src="../src/base.js"></script>	
+	<script src="base_test.js"></script>
+</head>
+
+<body>
+	<h1 id="qunit-header">Base object/class extension tests</h1>	
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>	
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+	
+	<div id="qunit-fixture">
+		<!-- html markup used by tests -->
+	</div>
+</body>			
+</html>

@@ -1,3 +1,5 @@
+/*requires base.js */
+
 var RGB = jQuery.Class.create({
     initialize: function(r, g, b) {
         this.r = r / 255.0; 

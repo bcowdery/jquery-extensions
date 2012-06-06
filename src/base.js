@@ -2,7 +2,7 @@
 /*jshint immed:false, loopfunc:true */
 
 (function (jQuery) {            
-    
+       
     /**  
      * Simple JavaScript Inheritance - By John Resig (MIT Licensed)
      * http://ejohn.org/blog/simple-javascript-inheritance/
@@ -13,7 +13,7 @@
     var fnTest = /var xyz/.test(function() { var xyz; }) ? /\b_super\b/ : /.*/;    
     this.Class = function() {};
 
-    Class.extend = function(prop) { 
+    Class.extend = function(prop) {         
         /*jshint newcap:false, noarg:false */            
         
         var _super = this.prototype;
@@ -54,7 +54,7 @@
         Class.extend = arguments.callee;
 
         return Class;
-    };    
+    };     
     
     
     /* Namespace jQuery.Class */
@@ -127,7 +127,7 @@
          */            
         overload: function(object, source) {
             for (var property in source) {
-                source[property].each(function(fn) {
+                jQuery.each(source[property], function(i, fn) {                
                     var old = object[property];        
                     object[property] = function() {
                         if (fn.length === arguments.length) {

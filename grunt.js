@@ -26,10 +26,19 @@ module.exports = function(grunt) {
                 dest: 'dist/<%= pkg.name %>.min.js'
             }
         },
+                                
+        qunit: {
+            all: [ 'test/**/*.html' ]
+        },
         
         lint: {
-            all: [ 'grunt.js', 'src/**/*.js' ]
+            all: [ 'grunt.js', 'src/**/*.js', 'test/**/*.js' ]
         },
+        
+        watch: {
+            files: '<config:lint.all>',
+            tasks: 'lint qunit'
+        },        
         
         jshint: {
             options: {
@@ -54,12 +63,9 @@ module.exports = function(grunt) {
             mangle: { 
                 except: [ 'jQuery' ] 
             }
-        },
-        
-        qunit: { 
         }
     });
         
     // default task
-    grunt.registerTask('default', 'lint concat min');
+    grunt.registerTask('default', 'lint qunit concat min');
 };

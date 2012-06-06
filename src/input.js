@@ -1,4 +1,7 @@
 /*global DOMException:true */
+
+/*requires base.js */
+
 if (jQuery.browser.msie) {
     jQuery.Class.overload(HTMLSelectElement.prototype, {
         add: [        

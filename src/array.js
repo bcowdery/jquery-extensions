@@ -1,3 +1,5 @@
+/*requires base.js */
+
 jQuery.extend(Array.prototype, {
     /**
      * Inserts a value into this array instance, shifting all remaining elements left.
@@ -13,14 +15,14 @@ jQuery.extend(Array.prototype, {
             index = 0;
         }
         
-        for (var i = this.size(); i > index; i--) {
+        for (var i = this.length; i > index; i--) {
             this[i] = this[i-1];
         }
         
         this[index] = value;
         return this;
     },
-    
+       
     /**
      * Splits an array into two separate instances at the given index, operationaly 
      * similar to Array#slice, only preceeding array elements are not discarded. This
@@ -32,6 +34,6 @@ jQuery.extend(Array.prototype, {
      * @param {Object} index (inclusive)
      */
     split: function(index) {
-        return [this.slice(0, index), this.slice(index, this.size())];    // todo: convert to jQuery code - Array::slice
+        return [this.slice(0, index), this.slice(index, this.length)];
     }
 });
