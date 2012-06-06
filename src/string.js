@@ -1,5 +1,3 @@
-/*requires base.js */
-
 jQuery.extend(String.prototype, {
     /**
      * Compares the contents of this string with another given string ignoring case.

@@ -1,5 +1,3 @@
-/*requires base.js */
-
 jQuery.extend(Array.prototype, {
     /**
      * Inserts a value into this array instance, shifting all remaining elements left.

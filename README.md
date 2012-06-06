@@ -75,7 +75,7 @@ _Note: in Windows, you may need to run grunt as `grunt.cmd`. See the [FAQ](/cowb
 
 
 ## Release History
-* SNAPSHOT-0.0 - Converted to jQuery, ditched ruby for a node.js Grunt build process.
+* 0.0-SNAPSHOT - Converted to jQuery, ditched ruby for a node.js Grunt build process.
 
 ## License
 Copyright (c) 2012 Brian Cowdery  
