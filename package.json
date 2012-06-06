@@ -23,10 +23,12 @@
 		}
 	],	
 	"dependencies": {
-		"jquery": "~1.7"
+		"jquery": "~1.7",
+		"grunt": "~0.3.9"		
 	},
 	"devDependencies": {
-		"grunt-compare-size": ">=0.1.0",
-		"grunt": ">=0.3.9"		
+	},
+	"scripts": {
+		"test": "grunt lint qunit"
 	}	
 }
