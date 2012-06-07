@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/bcowdery/jQuery-Extensions.png)](http://travis-ci.org/bcowdery/jQuery-Extensions)
+
 # jQuery Extensions
 
 Object-oriented extensions, syntax sugar and helpful functions for the jQuery Javascript library
@@ -75,7 +77,7 @@ _Note: in Windows, you may need to run grunt as `grunt.cmd`. See the [FAQ](/cowb
 
 
 ## Release History
-* 0.0-SNAPSHOT - Converted to jQuery, ditched ruby for a node.js Grunt build process.
+* 0.0.1 - Converted to jQuery, ditched ruby for a node.js Grunt build process.
 
 ## License
 Copyright (c) 2012 Brian Cowdery  
