@@ -1,162 +1,158 @@
-/*! jquery-extensions - v0.0-SNAPSHOT - 2012-06-06
-* http://github.com/bcowdery/jquery-extensions
-* Copyright (c) 2012 Brian Cowdery; Licensed MIT, GPL */
+/*! 
+ * jQuery Extensions - v0.0.1 
+ * 
+ * http://github.com/bcowdery/jquery-extensions
+ * 
+ * Copyright (c) 2012 Brian Cowdery 
+ * Licensed MIT, GPL 
+ * 
+ * Date: Thursday June 7th, 2012 
+ */
+
+(function (jQuery, window) {       
 
 /*global Class:true */
-/*jshint immed:false, loopfunc:true */
+   
+/**  
+ * Simple JavaScript Inheritance - By John Resig (MIT Licensed)
+ * http://ejohn.org/blog/simple-javascript-inheritance/
+ *
+ * Provides support for defining simple classes with inheritence.
+ */
+var initializing = false;
+var fnTest = /var xyz/.test(function() { var xyz; }) ? /\b_super\b/ : /.*/;    
+this.Class = function() {};
 
-(function (jQuery) {            
-    
-    /**  
-     * Simple JavaScript Inheritance - By John Resig (MIT Licensed)
-     * http://ejohn.org/blog/simple-javascript-inheritance/
-     *
-     * Provides support for defining simple classes with inheritence.
-     */
-    var initializing = false;
-    var fnTest = /var xyz/.test(function() { var xyz; }) ? /\b_super\b/ : /.*/;    
-    this.Class = function() {};
+Class.extend = function(prop) {         
+    /*jshint newcap:false, noarg:false, loopfunc:true */                
+    var _super = this.prototype;
 
-    Class.extend = function(prop) { 
-        /*jshint newcap:false, noarg:false */            
-        
-        var _super = this.prototype;
+    // instantiate a base class (create the instance, don't run the init constructor)
+    initializing = true;
+    var prototype = new this();
+    initializing = false;
 
-        // instantiate a base class (create the instance, don't run the init constructor)
-        initializing = true;
-        var prototype = new this();
-        initializing = false;
+    // copy the properties over onto the new prototype        
+    for (var name in prop) {          
+        prototype[name] = typeof prop[name] === "function" && typeof _super[name] === "function" && fnTest.test(prop[name]) ? 
+        (function(name, fn) {
+                return function() {
+                    var tmp = this._super;
 
-        // copy the properties over onto the new prototype        
-        for (var name in prop) {          
-            prototype[name] = typeof prop[name] === "function" && typeof _super[name] === "function" && fnTest.test(prop[name]) ? 
-            (function(name, fn) {
-                    return function() {
-                        var tmp = this._super;
+                    this._super = _super[name];
 
-                        this._super = _super[name];
+                    var ret = fn.apply(this, arguments);       
+                    this._super = tmp;
 
-                        var ret = fn.apply(this, arguments);       
-                        this._super = tmp;
+                    return ret;
+                };
+            }) (name, prop[name]) : 
+        prop[name];
+    }
 
-                        return ret;
-                    };
-                }) (name, prop[name]) : 
-            prop[name];
+    // the dummy class constructor
+    function Class() {          
+        if (!initializing && this.init) {
+            this.init.apply(this, arguments);
         }
+    }
 
-        // the dummy class constructor
-        function Class() {          
-            if (!initializing && this.init) {
-                this.init.apply(this, arguments);
-            }
-        }
+    // redefine the prototype and make the class extendable        
+    Class.prototype = prototype;
+    Class.prototype.constructor = Class;
+    Class.extend = arguments.callee;
 
-        // redefine the prototype and make the class extendable        
-        Class.prototype = prototype;
-        Class.prototype.constructor = Class;
-        Class.extend = arguments.callee;
+    return Class;
+};     
 
-        return Class;
-    };    
-    
-    
-    /* Namespace jQuery.Class */
-    jQuery.Class = {
-        /**
-         * Defines a new class structure that can be instantiated and extended.
-         *
-         * var Person = $.Class.create({
-         *         init: function(name) {
-         *            this.name = name;
-         *        },
-         *
-         *        toString: function() {
-         *            return "Hello, my name is " + this.name;
-         *        }    
-         * });
-         *
-         * @param {Hash} properties
-         */
-        create: function(properties) {
-            return Class.extend(properties);
-        },
 
-        /**
-         * Creates a new class structure that inherits from a base class. The extension
-         * class can override methods and has access to the base class via this._super;
-         *
-         * var Ninja = $.Class.extend(Person, {
-         *        init: function(name) {
-         *            this._super(name);
-         *        },
-         *
-         *        toString: function() {
-         *            return "... silence ...";
-         *        }
-         *    });
-         *         
-         * @param {Type} base
-         * @param {Hash} properties
-         */
-        extend: function(base, properties) {
-            if (typeof base === 'function') {    
-                return base.extend(properties);
-            }
-            
-            throw new Error("Base must extend from Class");
-        },
-    
-        /**
-         * Original concept: addMethod - By John Resig (MIT Licensed), 
-         * http://ejohn.org/blog/javascript-method-overloading/
-         * 
-         * Overloads a method of a given Class. Allows the calling of different overloaded
-         * functions based on the arguments they accept.
-         * 
-         * $.Class.overload(Date, {
-         *         parse: [
-         *             function(string) {
-         *                 // parse date string
-         *             },
-         * 
-         *             function(string, format) {
-         *                 // parse date string in given format
-         *            }
-         *        ] 
-         * });
-         * 
-         * @param {Object} object
-         * @param {Hash} source
-         */            
-        overload: function(object, source) {
-            for (var property in source) {
-                jQuery.each(source[property], function(i, fn) {                
-                    var old = object[property];        
-                    object[property] = function() {
-                        if (fn.length === arguments.length) {
-                            return fn.apply(this, arguments);
-                        } else {
-                            if (typeof old === 'function') {
-                                return old.apply(this, arguments);
-                            }
-                        }
-                    };            
-                });
-            }    
-        }            
-    };
-    
-}) (jQuery);
-jQuery.extend(String.prototype, {
+/* Namespace jQuery.Class */
+jQuery.Class = {
     /**
-     * Compares the contents of this string with another given string ignoring case.
-     * @param {String} value
+     * Defines a new class structure that can be instantiated and extended.
+     *
+     * var Person = $.Class.create({
+     *         init: function(name) {
+     *            this.name = name;
+     *        },
+     *
+     *        toString: function() {
+     *            return "Hello, my name is " + this.name;
+     *        }    
+     * });
+     *
+     * @param {Hash} properties
      */
-      equalsIgnoreCase: function(value) {
-          return (value !== null ? this.toLowerCase() === value.toLowerCase() : false);
-      }
-});
+    create: function(properties) {
+        return Class.extend(properties);
+    },
+
+    /**
+     * Creates a new class structure that inherits from a base class. The extension
+     * class can override methods and has access to the base class via this._super;
+     *
+     * var Ninja = $.Class.extend(Person, {
+     *        init: function(name) {
+     *            this._super(name);
+     *        },
+     *
+     *        toString: function() {
+     *            return "... silence ...";
+     *        }
+     *    });
+     *         
+     * @param {Type} base
+     * @param {Hash} properties
+     */
+    extend: function(base, properties) {
+        if (typeof base === 'function') {    
+            return base.extend(properties);
+        }
+        
+        throw new Error("Base must extend from Class");
+    },
+
+    /**
+     * Original concept: addMethod - By John Resig (MIT Licensed), 
+     * http://ejohn.org/blog/javascript-method-overloading/
+     * 
+     * Overloads a method of a given Class. Allows the calling of different overloaded
+     * functions based on the arguments they accept.
+     * 
+     * $.Class.overload(Date, {
+     *         parse: [
+     *             function(string) {
+     *                 // parse date string
+     *             },
+     * 
+     *             function(string, format) {
+     *                 // parse date string in given format
+     *            }
+     *        ] 
+     * });
+     * 
+     * @param {Object} object
+     * @param {Hash} source
+     */            
+    overload: function(object, source) {
+        /*jshint loopfunc:true */
+        for (var property in source) {
+            jQuery.each(source[property], function(i, fn) {                
+                var old = object[property];        
+                object[property] = function() {
+                    if (fn.length === arguments.length) {
+                        return fn.apply(this, arguments);
+                    } else {
+                        if (typeof old === 'function') {
+                            return old.apply(this, arguments);
+                        }
+                    }
+                };            
+            });
+        }    
+    }            
+};
+
 jQuery.extend(Array.prototype, {
     /**
      * Inserts a value into this array instance, shifting all remaining elements left.
@@ -195,7 +191,21 @@ jQuery.extend(Array.prototype, {
     }
 });
 
+jQuery.extend(String.prototype, {
+    /**
+     * Compares the contents of this string with another given string ignoring case.
+     * @param {String} value
+     */
+    equalsIgnoreCase: function(value) {
+        return (value !== null ? this.toLowerCase() === value.toLowerCase() : false);
+    }
+});
+
+
 /*global DOMException:true */
+
+/*requires base.js array.js*/
+
 if (jQuery.browser.msie) {
     jQuery.Class.overload(HTMLSelectElement.prototype, {
         add: [        
@@ -218,13 +228,13 @@ if (jQuery.browser.msie) {
              */
             function(element, before){
                 var array = jQuery.makeArray(this.options);
-                var index = (before != null) ? array.indexOf(before) : array.size();                
+                var index = (before != null) ? array.indexOf(before) : array.length;                
                 if (index < 0)  {
                     throw new Error(DOMException.NOT_FOUND_ERR, "Element not found");
                 }
                 
                 array.insert(element, index);
-                for (var i = 0; i < array.size(); i++) { 
+                for (var i = 0; i < array.length; i++) { 
                     this.options[i] = array[i];
                 }
             }
@@ -237,3 +247,143 @@ jQuery.extend(HTMLSelectElement.prototype, {
         this.options.length = 0;
     }
 });
+
+/*requires base.js */
+
+var RGB = jQuery.Class.create({
+    init: function(r, g, b) {
+        this.r = r / 255.0; 
+        this.g = g / 255.0;
+        this.b = b / 255.0;
+    },
+    
+    /**
+     * Returns this color as a web-safe hexadecimal color code.
+     */
+    hex: function() {        
+        var self = this;
+        return  "#" + jQuery.map(this.integer(), function(value) {
+            return self._toColorPart(value);
+        }).join('');            
+    },
+
+    _toColorPart: function(number) {                
+        var hex = number.toString(16);
+        return hex.length < 2 ? "0" + hex : hex;           
+    },
+    
+    /**
+     * Returns this color as an array of 8-bit integers.
+     */
+    integer: function() {        
+        return jQuery.map([this.r, this.g, this.b], function(value) {        
+            value = Math.round(value * 255);
+            return (value > 255 ? 255 : (value < 0 ? 0 : value));
+        });        
+    },    
+    
+    /**
+     * Returns this color as a web-safe RGB color code.
+     */
+    string: function() {        
+        return "rgb(" + this.integer().join(", ") + ")";           
+    },
+    
+    /**
+     * Mixes this color with the given color mask at the specified
+     * opacity, and returns the new color. 
+     * 
+     * @param {Object} mask color mask to mix with
+     * @param {Object} opacity decimal opacity between 0.0 and 1.0
+     */
+    mix: function(mask, opacity) {
+      if (opacity < 0.0 || opacity > 1.0) {
+        throw new Error("Opacity must be an number between 0.0 and 1.0");            
+      }
+      
+      var rgb = this.integer();
+      var mixed = new RGB(rgb[0], rgb[1], rgb[2]);
+      
+      mixed.r = (mixed.r * opacity) + (mask.r * (1 - opacity).toFixed(2));
+      mixed.g = (mixed.g * opacity) + (mask.g * (1 - opacity).toFixed(2));
+      mixed.b = (mixed.b * opacity) + (mask.b * (1 - opacity).toFixed(2));
+      
+      return mixed;
+    },
+    
+    /**
+     * Darkens this color by shifting it towards black by the
+     * given percentage.
+     * 
+     * @param {Object} percent integer percentage to darken by, between 0 and 100.
+     */
+    darken: function(percent) {
+      var black = new RGB(0, 0, 0);
+      return this.mix(black, (1 - (percent/100)));
+    },
+    
+    /**
+     * Lightens this color by shifting it towards pure white by the
+     * the given percentage.
+     * 
+     * @param {Object} percent integer percentage to darken by, between 0 and 100.
+     */
+    lighten: function(percent) {
+      var white = new RGB(255, 255, 255);
+      return this.mix(white, (1 - (percent/100)));
+    },
+    
+    /**
+     * Generates an aray of colors between this color and the given end color,
+     * in the number of frames specified.
+     * 
+     * @param {Object} end color for tweened frames to end at
+     * @param {Object} frames number of frames (colors) to generate, including start and end colors
+     */
+    tween: function(end, frames) {
+        var start = this;
+        var colors = [];
+        for (var i = 0; i < frames; i++) {
+            colors.push(end.mix(start, (1 / frames) * i));
+        }        
+        return colors;        
+    }
+});
+
+
+jQuery.Class.overload(RGB.prototype, {
+    init: [
+        function(hex) {
+            hex = hex.replace(/[#;]/g, '');
+            var matches = [];
+            var rgb = [];            
+            switch (hex.length) {
+                case 3:
+                    matches = /([A-Fa-f0-9])([A-Fa-f0-9])([A-Fa-f0-9])/.exec(hex);
+                    rgb.push(parseInt(matches[1] + matches[1], 16)); // red
+                    rgb.push(parseInt(matches[2] + matches[2], 16)); // green
+                    rgb.push(parseInt(matches[3] + matches[3], 16)); // blue
+                    
+                    break;
+                    
+                case 6:
+                    matches = /([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})/.exec(hex);
+                    rgb.push(parseInt(matches[1], 16)); // red
+                    rgb.push(parseInt(matches[2], 16)); // green
+                    rgb.push(parseInt(matches[3], 16)); // blue
+                                
+                    break;
+                    
+                default:
+                    throw new Error("Malformed hexadecimal color code, must be 3 or 6 digits in length.");
+            }    
+            
+            this.init(rgb[0], rgb[1], rgb[2]);
+        }
+    ]
+});
+
+// expose RGB color as a global object
+window.RGB = RGB;
+
+}) (jQuery, window);

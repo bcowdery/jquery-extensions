@@ -6,7 +6,7 @@ var RGB = jQuery.Class.create({
         this.g = g / 255.0;
         this.b = b / 255.0;
     },
-        
+    
     /**
      * Returns this color as a web-safe hexadecimal color code.
      */
@@ -21,7 +21,7 @@ var RGB = jQuery.Class.create({
         var hex = number.toString(16);
         return hex.length < 2 ? "0" + hex : hex;           
     },
-            
+    
     /**
      * Returns this color as an array of 8-bit integers.
      */
@@ -84,7 +84,7 @@ var RGB = jQuery.Class.create({
     },
     
     /**
-     * Generates an aray of colors between this color and the given color,
+     * Generates an aray of colors between this color and the given end color,
      * in the number of frames specified.
      * 
      * @param {Object} end color for tweened frames to end at
@@ -132,3 +132,6 @@ jQuery.Class.overload(RGB.prototype, {
         }
     ]
 });
+
+// expose RGB color as a global object
+window.RGB = RGB;

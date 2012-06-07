@@ -6,7 +6,6 @@
 
     // DOM element under test
     var empty;
-
     
     module("SELECT", {
         setup: function() {

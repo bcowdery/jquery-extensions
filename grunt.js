@@ -1,3 +1,12 @@
+/*
+* jQuery Extensions
+
+* https://github.com/bcowdery/jquery-extensions
+*
+* Copyright (c) 2012 Brian Cowdery
+* Dual licensed under the MIT & GPL v2 licenses.
+*/
+
 /*global module:false*/
 module.exports = function(grunt) {
     
@@ -6,16 +15,21 @@ module.exports = function(grunt) {
         pkg: '<json:package.json>',
         
         meta: {
-            banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-                '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-                '<%= pkg.homepage ? "* " + pkg.homepage + "\n" : "" %>' +
-                '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-                ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'            
+            banner: '/*! \n' +
+                    ' * <%= pkg.title %> - v<%= pkg.version %> \n' +
+                    ' * \n' +
+                    '<%= pkg.homepage ? " * " + pkg.homepage + "\n" : "" %>' +
+                    ' * \n' +
+                    ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> \n' +
+                    ' * Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> \n' +
+                    ' * \n' +
+                    ' * Date: <%= grunt.template.today("dddd mmmm dS, yyyy") %> \n' +
+                    ' */'
         },
         
         concat: {
             dist: {
-                src: [ '<banner:meta.banner>', 'src/base.js', 'src/string.js', 'src/array.js', 'src/date.js', 'src/input.js', 'src.color.js' ],
+                src: [ '<banner:meta.banner>', 'src/intro.js', 'src/base.js', 'src/array.js', 'src/string.js', 'src/date.js', 'src/input.js', 'src/color.js', 'src/outro.js' ],
                 dest: 'dist/<%= pkg.name %>.js'
             }
         },
@@ -32,19 +46,20 @@ module.exports = function(grunt) {
         },
         
         lint: {
-            all: [ 'grunt.js', 'src/**/*.js', 'test/**/*.js' ]
+            beforeconcat: [ 'grunt.js', 'src/base.js', 'src/array.js', 'src/string.js', 'src/date.js', 'src/input.js', 'src.color.js', 'test/**/*.js' ],
+            afterconcat: [ '<config:concat.dist.dest>' ]            
         },
         
         watch: {
             files: '<config:lint.all>',
-            tasks: 'lint qunit'
+            tasks: 'lint:beforeconcat qunit'
         },        
         
         jshint: {
             options: {
                 curly: true,
                 eqeqeq: true,
-                immed: true,
+                immed: false,
                 latedef: true,
                 newcap: true,
                 noarg: true,
@@ -60,12 +75,9 @@ module.exports = function(grunt) {
         },
         
         uglify: { 
-            mangle: { 
-                except: [ 'jQuery' ] 
-            }
         }
     });
         
     // default task
-    grunt.registerTask('default', 'lint qunit concat min');
+    grunt.registerTask('default', 'lint:beforeconcat qunit concat lint:afterconcat min');
 };

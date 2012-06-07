@@ -1,6 +1,6 @@
 /*global DOMException:true */
 
-/*requires base.js */
+/*requires base.js array.js*/
 
 if (jQuery.browser.msie) {
     jQuery.Class.overload(HTMLSelectElement.prototype, {
@@ -24,13 +24,13 @@ if (jQuery.browser.msie) {
              */
             function(element, before){
                 var array = jQuery.makeArray(this.options);
-                var index = (before != null) ? array.indexOf(before) : array.size();                
+                var index = (before != null) ? array.indexOf(before) : array.length;                
                 if (index < 0)  {
                     throw new Error(DOMException.NOT_FOUND_ERR, "Element not found");
                 }
                 
                 array.insert(element, index);
-                for (var i = 0; i < array.size(); i++) { 
+                for (var i = 0; i < array.length; i++) { 
                     this.options[i] = array[i];
                 }
             }
