@@ -65,7 +65,6 @@ Class.extend = function(prop) {
     return Class;
 };     
 
-
 /* Namespace jQuery.Class */
 jQuery.Class = {
     /**
@@ -250,26 +249,49 @@ jQuery.extend(HTMLSelectElement.prototype, {
 
 /*requires base.js */
 
+/**
+ * Converts an 8-bit RGB color value to a 2-digit hexadecimal representation in the [0..255] range.
+ * Useful for composing CSS color strings.
+ *
+ * @param {number} 8-bit RGB color value 0-255
+ */ 
+jQuery.extend({
+    toColorPart: function(number) {
+        if (!jQuery.isNumeric(number)) {
+            throw new Error("Must be a number between 0-255.");    
+        }
+        
+        number = (number > 255 ? 255 : (number < 0 ? 0 : number));
+        var hex = number.toString(16);
+        return hex.length < 2 ? "0" + hex : hex;               
+    }
+});
+
+/**
+ * An RGB color object for performing simple color manipulations.  
+ *
+ * New instances of an RGB color object can be creating using both 8-bit color values
+ * and HTML/CSS hex color codes.
+ *
+ *  new RGB(255, 255, 255);
+ *  new RGB("#ffffff");
+ *  new RGB("#fff");
+ */
 var RGB = jQuery.Class.create({
     init: function(r, g, b) {
         this.r = r / 255.0; 
         this.g = g / 255.0;
-        this.b = b / 255.0;
+        this.b = b / 255.0;        
     },
-    
+
     /**
      * Returns this color as a web-safe hexadecimal color code.
      */
     hex: function() {        
         var self = this;
         return  "#" + jQuery.map(this.integer(), function(value) {
-            return self._toColorPart(value);
+            return jQuery.toColorPart(value);
         }).join('');            
-    },
-
-    _toColorPart: function(number) {                
-        var hex = number.toString(16);
-        return hex.length < 2 ? "0" + hex : hex;           
     },
     
     /**
@@ -317,9 +339,8 @@ var RGB = jQuery.Class.create({
      * 
      * @param {Object} percent integer percentage to darken by, between 0 and 100.
      */
-    darken: function(percent) {
-      var black = new RGB(0, 0, 0);
-      return this.mix(black, (1 - (percent/100)));
+    darken: function(percent) {      
+      return this.mix(RGB.Black, (1 - (percent/100)));
     },
     
     /**
@@ -328,9 +349,8 @@ var RGB = jQuery.Class.create({
      * 
      * @param {Object} percent integer percentage to darken by, between 0 and 100.
      */
-    lighten: function(percent) {
-      var white = new RGB(255, 255, 255);
-      return this.mix(white, (1 - (percent/100)));
+    lighten: function(percent) {     
+      return this.mix(RGB.White, (1 - (percent/100)));
     },
     
     /**
@@ -371,7 +391,7 @@ jQuery.Class.overload(RGB.prototype, {
                     rgb.push(parseInt(matches[1], 16)); // red
                     rgb.push(parseInt(matches[2], 16)); // green
                     rgb.push(parseInt(matches[3], 16)); // blue
-                                
+                    
                     break;
                     
                 default:
@@ -382,6 +402,10 @@ jQuery.Class.overload(RGB.prototype, {
         }
     ]
 });
+
+// color constants
+RGB.White = new RGB(255, 255, 255);
+RGB.Black = new RGB(0, 0, 0);
 
 // expose RGB color as a global object
 window.RGB = RGB;

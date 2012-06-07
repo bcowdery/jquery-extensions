@@ -52,7 +52,6 @@ Class.extend = function(prop) {
     return Class;
 };     
 
-
 /* Namespace jQuery.Class */
 jQuery.Class = {
     /**
