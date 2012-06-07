@@ -28,6 +28,6 @@
 	"devDependencies": {
 	},
 	"scripts": {
-		"test": "grunt lint qunit"
+		"test": "grunt lint:beforeconcat qunit"
 	}	
 }
