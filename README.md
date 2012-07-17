@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/bcowdery/jQuery-Extensions.png)](http://travis-ci.org/bcowdery/jQuery-Extensions)
+[![Build Status](https://secure.travis-ci.org/bcowdery/jquery-extensions.png)](http://travis-ci.org/bcowdery/jquery-extensions)
 
 # jQuery Extensions
 
